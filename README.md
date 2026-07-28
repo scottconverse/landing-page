@@ -40,8 +40,9 @@ what version 1.0.0 is.
 
 ## For developers (the technical version)
 
-`landing-page` is an [Agent Skill](https://code.claude.com/docs/en/skills) for Claude Code and
-Cowork. Six Markdown files, no runtime dependencies:
+`landing-page` is an [Agent Skill](https://code.claude.com/docs/en/skills) — a model-agnostic protocol
+that any Claude instance (Opus, Sonnet, Haiku, Fable) can load and execute. Six Markdown files, no
+runtime dependencies, no model-specific code:
 
 ```
 SKILL.md                    the protocol — always loaded
@@ -106,13 +107,15 @@ Markdown files. It's served by GitHub Pages from `/docs` on `main`.
 
 ## Install
 
-**Claude Code / Cowork (Windows PowerShell):**
+Works with Claude Code, Claude Cowork, or claude.ai (Skills enabled).
+
+**Windows PowerShell:**
 
 ```powershell
 iwr -useb https://raw.githubusercontent.com/scottconverse/landing-page/main/install.ps1 | iex
 ```
 
-**Claude Code (macOS / Linux):**
+**macOS / Linux:**
 
 ```bash
 curl -fsSL https://raw.githubusercontent.com/scottconverse/landing-page/main/install.sh | bash
@@ -138,10 +141,11 @@ It also triggers on its own before a repository is announced, open-sourced, or r
 
 ## Project status
 
-Version 1.0.0 — first public release. Functional and in regular use; single author. It is a
-protocol, not a guarantee: output quality depends on the model running it and on how much your
-repository actually reveals. The Verify phase does more when the environment has a browser or
-renderer available, and the skill is required to say so when it doesn't.
+Version 1.0.0 — first public release. Functional and in regular use; single author. Model-agnostic:
+works with any Claude model (Opus, Sonnet, Haiku, Fable). It is a protocol, not a guarantee: output
+quality depends on the model and on how much your repository reveals. The Verify phase does more
+when the environment has a browser or renderer available, and the skill is required to say so when
+it doesn't.
 
 ## License
 
