@@ -348,16 +348,22 @@
   <div class="wrap">
     <h2>Install</h2>
     <p class="section-note">
-      For Claude Code or Cowork: copies <code>SKILL.md</code> and five reference guides into <code>~/.claude/skills/landing-page/</code>. The skill protocol is portable — any Claude instance can load and run it.
+      The skill is <code>SKILL.md</code> plus five reference guides. Load it into any Claude instance running Claude Code, Cowork, or claude.ai with Skills enabled.
     </p>
 
-    <p class="install-label">Windows — PowerShell</p>
-<pre><code>iwr -useb https://raw.githubusercontent.com/scottconverse/landing-page/main/install.ps1 | iex</code></pre>
+    <p class="install-label">Claude Code / Cowork</p>
+<pre><code><span class="c"># Windows PowerShell</span>
+iwr -useb https://raw.githubusercontent.com/scottconverse/landing-page/main/install.ps1 | iex
 
-    <p class="install-label">macOS / Linux</p>
-<pre><code>curl -fsSL https://raw.githubusercontent.com/scottconverse/landing-page/main/install.sh | bash</code></pre>
+<span class="c"># macOS / Linux</span>
+curl -fsSL https://raw.githubusercontent.com/scottconverse/landing-page/main/install.sh | bash</code></pre>
 
-    <p class="install-label">Then tell Claude</p>
+    <p class="install-label">Or load the protocol manually</p>
+    <p style="color: var(--muted); max-width: var(--measure); margin: 0 0 1.5rem; font-size: 16px;">
+      Copy <code>SKILL.md</code> and the <code>references/</code> directory into your Claude environment's skills folder. The protocol works with any Claude model — no model-specific code.
+    </p>
+
+    <p class="install-label">Then invoke the skill</p>
     <ul class="say">
       <li>/landing-page</li>
       <li>build a landing page for this repo</li>
