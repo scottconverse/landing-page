@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>landing-page — a Claude skill that builds the site, not a plan</title>
+<meta name="description" content="An Agent Skill for Claude Code and Cowork. It reads what a repository actually implements, builds a real landing-page website from that evidence, runs it, looks at it, and fixes what's wrong.">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'><rect width='32' height='32' fill='%23f7f5f0'/><rect x='6' y='6' width='20' height='4' fill='%23b8442c'/><rect x='6' y='14' width='20' height='2' fill='%2314171c'/><rect x='6' y='19' width='14' height='2' fill='%2314171c'/><rect x='6' y='24' width='17' height='2' fill='%2314171c'/></svg>">
+<style>
+  :root {
+    --paper:      #f7f5f0;
+    --paper-2:    #efece4;
+    --ink:        #14171c;
+    --muted:      #5d6169;
+    --accent:     #b8442c;
+    --accent-ink: #8f3320;
+    --rule:       #d8d3c7;
+    --ok:         #1f6b45;
+    --warn:       #8a6212;
+    --serif: "Iowan Old Style", "Palatino Linotype", Palatino, "Book Antiqua", Georgia, serif;
+    --sans: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --mono: ui-monospace, "Cascadia Mono", "SF Mono", Consolas, "Liberation Mono", monospace;
+    --measure: 68ch;
+    --pad: clamp(1.25rem, 5vw, 4rem);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    *, *::before, *::after { animation: none !important; transition: none !important; }
+  }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.65;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent-ink); text-underline-offset: 3px; }
+  a:hover { color: var(--accent); }
+  :focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  code, kbd, pre { font-family: var(--mono); }
+  code { font-size: 0.9em; }
+
+  .wrap { width: 100%; max-width: 1080px; margin: 0 auto; padding-inline: var(--pad); }
+
+  .skip {
+    position: absolute; left: -9999px;
+    background: var(--ink); color: var(--paper);
+    padding: .6rem 1rem; z-index: 10;
+  }
+  .skip:focus { left: 1rem; top: 1rem; }
+
+  /* ---------- masthead ---------- */
+  header.masthead {
+    border-bottom: 1px solid var(--rule);
+    background: var(--paper);
+    position: sticky; top: 0; z-index: 5;
+  }
+  .masthead .wrap {
+    display: flex; flex-wrap: wrap; align-items: baseline;
+    gap: .5rem 1.5rem; padding-block: .85rem;
+  }
+  .wordmark {
+    font-family: var(--mono); font-size: 15px; font-weight: 600;
+    letter-spacing: -.01em; color: var(--ink); text-decoration: none;
+  }
+  .wordmark::before {
+    content: "/"; color: var(--accent); margin-right: 1px;
+  }
+  .masthead nav { margin-left: auto; display: flex; flex-wrap: wrap; gap: .25rem 1.25rem; }
+  .masthead nav a {
+    font-size: 14.5px; color: var(--muted); text-decoration: none;
+    padding-block: 2px; border-bottom: 1px solid transparent;
+  }
+  .masthead nav a:hover { color: var(--ink); border-bottom-color: var(--accent); }
+
+  /* ---------- hero ---------- */
+  .hero { padding-block: clamp(3rem, 9vw, 6.5rem) clamp(2.5rem, 6vw, 4rem); }
+  .eyebrow {
+    font-family: var(--mono); font-size: 13px; letter-spacing: .06em;
+    text-transform: uppercase; color: var(--accent-ink); margin: 0 0 1.25rem;
+  }
+  h1 {
+    font-family: var(--serif);
+    font-size: clamp(2.4rem, 6.4vw, 4.1rem);
+    line-height: 1.06;
+    letter-spacing: -.02em;
+    font-weight: 600;
+    margin: 0 0 1.25rem;
+    max-width: 20ch;
+  }
+  h1 em { font-style: normal; color: var(--accent); }
+  .lede {
+    font-size: clamp(1.08rem, 2.1vw, 1.32rem);
+    line-height: 1.55; color: var(--ink);
+    max-width: 58ch; margin: 0 0 1rem;
+  }
+  .sub { color: var(--muted); max-width: 62ch; margin: 0 0 2rem; }
+
+  .actions { display: flex; flex-wrap: wrap; gap: .75rem 1rem; align-items: center; }
+  .btn {
+    display: inline-block; text-decoration: none; font-weight: 600;
+    font-size: 15.5px; padding: .7rem 1.35rem; border-radius: 2px;
+    border: 1px solid var(--ink);
+  }
+  .btn-primary { background: var(--ink); color: var(--paper); }
+  .btn-primary:hover { background: var(--accent-ink); border-color: var(--accent-ink); color: #fff; }
+  .btn-secondary { background: transparent; color: var(--ink); }
+  .btn-secondary:hover { background: var(--paper-2); color: var(--ink); }
+
+  /* ---------- the one bold thing: the evidence specimen ---------- */
+  .specimen {
+    margin-top: clamp(2.5rem, 6vw, 4rem);
+    border: 1px solid var(--ink);
+    background: var(--paper-2);
+  }
+  .specimen-head {
+    display: flex; flex-wrap: wrap; gap: .35rem 1rem; align-items: baseline;
+    padding: .75rem 1.15rem; border-bottom: 1px solid var(--ink);
+    background: var(--ink); color: var(--paper);
+    font-family: var(--mono); font-size: 13px; letter-spacing: .04em;
+  }
+  .specimen-head span:last-child { margin-left: auto; opacity: .75; }
+  .specimen-body { padding: .35rem 1.15rem 1.15rem; }
+  .row {
+    display: grid; grid-template-columns: 8.5rem 1fr; gap: .2rem 1.25rem;
+    padding: .9rem 0; border-bottom: 1px solid var(--rule);
+  }
+  .row:last-child { border-bottom: 0; }
+  .tier {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .05em;
+    text-transform: uppercase; padding-top: .28rem;
+  }
+  .tier.t1 { color: var(--ok); }
+  .tier.t2 { color: var(--warn); }
+  .tier.t3 { color: var(--accent-ink); }
+  .tier.t4 { color: var(--muted); }
+  .row p { margin: 0; }
+  .row p + p { margin-top: .3rem; color: var(--muted); font-size: 15.5px; }
+  .row .said { font-family: var(--serif); font-size: 1.12rem; line-height: 1.4; }
+
+  /* ---------- sections ---------- */
+  section { padding-block: clamp(2.75rem, 7vw, 5rem); border-top: 1px solid var(--rule); }
+  section[id], #top { scroll-margin-top: 4.25rem; }
+  h2 {
+    font-family: var(--serif); font-weight: 600;
+    font-size: clamp(1.65rem, 3.4vw, 2.35rem);
+    line-height: 1.15; letter-spacing: -.015em; margin: 0 0 .4rem; max-width: 24ch;
+  }
+  .section-note { color: var(--muted); max-width: var(--measure); margin: 0 0 2rem; }
+  h3 { font-size: 1.02rem; margin: 0 0 .35rem; letter-spacing: -.005em; }
+  p { max-width: var(--measure); }
+
+  .cols {
+    display: grid; gap: 1.75rem 2.5rem;
+    grid-template-columns: repeat(auto-fit, minmax(15rem, 1fr));
+  }
+  .cols > div > p { margin: 0; color: var(--muted); font-size: 16px; }
+  .cols h3::before {
+    content: ""; display: block; width: 2rem; height: 3px;
+    background: var(--accent); margin-bottom: .8rem;
+  }
+
+  /* ---------- phases ---------- */
+  ol.phases { list-style: none; margin: 0; padding: 0; counter-reset: phase; }
+  ol.phases li {
+    counter-increment: phase;
+    display: grid; grid-template-columns: 2.6rem 1fr; gap: .1rem 1.1rem;
+    padding: 1.05rem 0; border-bottom: 1px solid var(--rule);
+  }
+  ol.phases li::before {
+    content: counter(phase);
+    font-family: var(--mono); font-size: 13px; color: var(--accent-ink);
+    padding-top: .35rem;
+  }
+  ol.phases b { font-size: 1.02rem; }
+  ol.phases p { margin: .15rem 0 0; color: var(--muted); font-size: 16px; max-width: 60ch; }
+  ol.phases .file {
+    font-family: var(--mono); font-size: 12.5px; color: var(--muted);
+    display: inline-block; margin-top: .3rem;
+  }
+
+  /* ---------- refusals ---------- */
+  ul.refusals { list-style: none; margin: 0; padding: 0; column-gap: 2.5rem; }
+  ul.refusals li {
+    padding: .55rem 0 .55rem 1.75rem; position: relative;
+    border-bottom: 1px solid var(--rule); max-width: var(--measure);
+  }
+  ul.refusals li::before {
+    content: "×"; position: absolute; left: .25rem; top: .5rem;
+    color: var(--accent); font-size: 1.15rem; line-height: 1.3;
+  }
+
+  /* ---------- code ---------- */
+  pre {
+    background: var(--ink); color: #e8e5dd;
+    padding: 1rem 1.15rem; border-radius: 2px;
+    overflow-x: auto; font-size: 14px; line-height: 1.55;
+    max-width: var(--measure);
+  }
+  pre .c { color: #9aa0a8; }
+  .install-label {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .05em;
+    text-transform: uppercase; color: var(--muted); margin: 1.75rem 0 .5rem;
+  }
+  .install-label:first-of-type { margin-top: 0; }
+
+  .say {
+    display: flex; flex-wrap: wrap; gap: .5rem .6rem; padding: 0; margin: 0; list-style: none;
+  }
+  .say li {
+    font-family: var(--mono); font-size: 13.5px;
+    border: 1px solid var(--rule); background: var(--paper-2);
+    padding: .35rem .7rem; border-radius: 2px;
+  }
+
+  /* ---------- status ---------- */
+  dl.status { margin: 0; display: grid; grid-template-columns: minmax(9rem, 12rem) 1fr; }
+  dl.status dt {
+    font-family: var(--mono); font-size: 12.5px; letter-spacing: .05em;
+    text-transform: uppercase; color: var(--muted);
+    padding: .85rem 0; border-top: 1px solid var(--rule);
+  }
+  dl.status dd {
+    margin: 0; padding: .85rem 0; border-top: 1px solid var(--rule);
+  }
+  dl.status dd p { margin: 0; }
+  dl.status dd p + p { margin-top: .4rem; color: var(--muted); font-size: 15.5px; }
+
+  /* ---------- footer ---------- */
+  footer {
+    border-top: 1px solid var(--ink);
+    padding-block: 2.25rem 3rem;
+    font-size: 15px; color: var(--muted);
+  }
+  footer .wrap { display: flex; flex-wrap: wrap; gap: .75rem 2rem; align-items: baseline; }
+  footer nav { display: flex; flex-wrap: wrap; gap: .5rem 1.5rem; margin-left: auto; }
+
+  @media (max-width: 640px) {
+    body { font-size: 16.5px; }
+    /* the nav wraps to two lines here — sticky would eat a fifth of the screen */
+    header.masthead { position: static; }
+    section[id], #top { scroll-margin-top: .5rem; }
+    .row { grid-template-columns: 1fr; }
+    .tier { padding-top: 0; }
+    dl.status { grid-template-columns: 1fr; }
+    dl.status dd { padding-top: 0; border-top: 0; }
+    dl.status dt { padding-bottom: .2rem; }
+    footer nav { margin-left: 0; }
+    .specimen-head span:last-child { margin-left: 0; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<header class="masthead">
+  <div class="wrap">
+    <a class="wordmark" href="#top">landing-page</a>
+    <nav aria-label="Section">
+      <a href="#how">How it works</a>
+      <a href="#evidence">The evidence rule</a>
+      <a href="#install">Install</a>
+      <a href="https://github.com/scottconverse/landing-page">GitHub</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<div class="hero wrap" id="top">
+  <p class="eyebrow">Agent Skill · Claude Code &amp; Cowork</p>
+  <h1>Point it at a repository. Get a <em>website</em>, not a plan.</h1>
+  <p class="lede">
+    <strong>landing-page</strong> reads what your code actually implements — not what the README
+    claims — then builds a real landing-page site from that evidence, runs it, looks at it at
+    three screen widths, and fixes what's broken before it hands the work back.
+  </p>
+  <p class="sub">
+    Real source files, a design system derived from your product, working navigation, build
+    scripts, and a deployment path. The README it writes afterward is one short page that links
+    to the site.
+  </p>
+  <div class="actions">
+    <a class="btn btn-primary" href="#install">Install the skill</a>
+    <a class="btn btn-secondary" href="https://github.com/scottconverse/landing-page/blob/main/SKILL.md">Read SKILL.md</a>
+  </div>
+
+  <div class="specimen">
+    <div class="specimen-head">
+      <span>EVIDENCE CLASSIFICATION</span>
+      <span>the tier chooses the verb</span>
+    </div>
+    <div class="specimen-body">
+      <div class="row">
+        <div class="tier t1">Confirmed</div>
+        <div>
+          <p class="said">“Runs entirely offline and exposes a documented HTTP API.”</p>
+          <p>Implemented, backed by code, tests, config, or current docs. Say it plainly.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="tier t2">Partial</div>
+        <div>
+          <p class="said">“Includes experimental support for Postgres.”</p>
+          <p>Present but incomplete, unstable, gated, or lightly tested. The qualifier stays in.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="tier t3">Planned</div>
+        <div>
+          <p class="said">“Multi-tenant deployments — <b>planned</b>.”</p>
+          <p>Only in a roadmap, an issue, a spec, or a placeholder. Never presented as available.</p>
+        </div>
+      </div>
+      <div class="row">
+        <div class="tier t4">Unverified</div>
+        <div>
+          <p class="said">Cut from the page.</p>
+          <p>Suggested but not adequately supported. It doesn't get a sentence.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<section id="why">
+  <div class="wrap">
+    <h2>Why the usual answer disappoints</h2>
+    <p class="section-note">
+      Ask most tools for a landing page and you get one of three things back. This skill is
+      written against all three.
+    </p>
+    <div class="cols">
+      <div>
+        <h3>A restyled README</h3>
+        <p>
+          Your README's paragraphs, chopped into cards. It reads like documentation with a
+          gradient on it, and it sells nothing. The skill treats the README as one input — usually
+          the least current one — and goes to the implementation instead.
+        </p>
+      </div>
+      <div>
+        <h3>A design proposal</h3>
+        <p>
+          Wireframes, a palette, a section outline, and a suggestion that you build it. The skill
+          is an implementation agent: create the files, run the project, look at the result, fix
+          the defects, repeat until polished.
+        </p>
+      </div>
+      <div>
+        <h3>Confident fiction</h3>
+        <p>
+          Invented user counts, imaginary testimonials, “enterprise-grade” applied to a
+          prototype. Every claim is classified against repository evidence first, and the tier
+          decides the wording.
+        </p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="how">
+  <div class="wrap">
+    <h2>Seven phases, worked in order</h2>
+    <p class="section-note">
+      <code>SKILL.md</code> carries the protocol. Five reference files are opened only at the
+      phase that needs them, so the model isn't reading a design checklist while it's still
+      reading your source tree.
+    </p>
+    <ol class="phases">
+      <li>
+        <div>
+          <b>Investigate</b>
+          <p>
+            Reverse-engineer the real product from code, schemas, migrations, CI, tests, docs and
+            live TODOs: identity, audience, capability inventory, and the maturity the evidence
+            actually earns. Capabilities that exist in the implementation but appear nowhere in
+            the docs get elevated; documented features backed by a stub get qualified.
+          </p>
+          <span class="file">references/investigation.md</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Assess the stack — before any design work</b>
+          <p>
+            Find the existing site, design system, or brand. If the repository already declares
+            tokens, brand colors, or typefaces, <strong>that is the product's visual identity</strong>
+            and the site inherits it. Then pick the lightest stack that can look genuinely good,
+            and decide where the site lives.
+          </p>
+          <span class="file">references/stack.md</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Position</b>
+          <p>
+            Settle on one category, one audience, one problem, one differentiator, one value
+            proposition, three to six capability themes, and two calls to action — before a word
+            of copy is written.
+          </p>
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Design</b>
+          <p>
+            Write the design system down first: color, type, space, form, behavior, detail.
+            Derive it from the software's own domain rather than a template — and spend boldness
+            once, in a single place, with everything around it kept quiet.
+          </p>
+          <span class="file">references/design.md</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Build</b>
+          <p>
+            Section structure, scroll narrative, visual rhythm — implemented as real source files
+            with semantic HTML, reusable sections, and no dependency sprawl.
+          </p>
+          <span class="file">references/structure.md</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Verify</b>
+          <p>
+            Run it. Render it. Inspect at desktop, tablet and mobile widths. Fix the clipping,
+            the contrast, the dead links, the broken mobile menu. Build it and preview the built
+            output too, so asset paths still resolve under a repository subpath. If no renderer
+            is available, the skill has to say so rather than imply it looked.
+          </p>
+          <span class="file">references/review.md</span>
+        </div>
+      </li>
+      <li>
+        <div>
+          <b>Rewrite the README</b>
+          <p>
+            Last, and short: a technical entry point that links to the site, with verified
+            commands and an honest project-status line. Never a second copy of the website.
+          </p>
+        </div>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<section id="evidence">
+  <div class="wrap">
+    <h2>What it will not write</h2>
+    <p class="section-note">
+      A landing page is the one document where exaggeration is traditional. These are hard
+      exclusions in the skill, not suggestions — if the repository doesn't support it, it doesn't
+      reach the page.
+    </p>
+    <ul class="refusals">
+      <li>Customer counts, usage numbers, star counts, adoption claims</li>
+      <li>Testimonials, customer logos, awards, press mentions</li>
+      <li>Benchmarks and performance numbers that were never measured</li>
+      <li>Uptime, reliability, or security guarantees</li>
+      <li>Production deployments and enterprise readiness that aren't in evidence</li>
+      <li>Roadmap dates and release timelines</li>
+      <li>Stock photography and fabricated screenshots</li>
+      <li>Dead placeholder links in the rendered page</li>
+    </ul>
+    <p style="margin-top:1.75rem">
+      It also picks the maturity word the evidence earns — <em>prototype</em> and
+      <em>early-stage</em> are available words — judged on test depth, release history, upgrade
+      paths, error handling, observability, deployment automation, and unfinished UI.
+      <strong>Polish is not maturity.</strong>
+    </p>
+  </div>
+</section>
+
+<section id="install">
+  <div class="wrap">
+    <h2>Install</h2>
+    <p class="section-note">
+      Copies <code>SKILL.md</code> and the five reference files into
+      <code>~/.claude/skills/landing-page/</code>. Re-run to update; uninstall by deleting the
+      folder.
+    </p>
+
+    <p class="install-label">Windows — PowerShell</p>
+<pre><code>iwr -useb https://raw.githubusercontent.com/scottconverse/landing-page/main/install.ps1 | iex</code></pre>
+
+    <p class="install-label">macOS / Linux</p>
+<pre><code>curl -fsSL https://raw.githubusercontent.com/scottconverse/landing-page/main/install.sh | bash</code></pre>
+
+    <p class="install-label">Manual</p>
+<pre><code>git clone https://github.com/scottconverse/landing-page
+<span class="c"># copy SKILL.md and references/ into ~/.claude/skills/landing-page/</span></code></pre>
+
+    <h3 style="margin-top:2.5rem;font-size:1.15rem">Then say any of this</h3>
+    <ul class="say">
+      <li>/landing-page</li>
+      <li>build a landing page for this repo</li>
+      <li>make this repo look legit</li>
+      <li>what does this project even do?</li>
+      <li>write the pitch for this repo</li>
+    </ul>
+    <p style="margin-top:1.5rem;color:var(--muted)">
+      It also triggers on its own before a repository is announced, open-sourced, or released.
+    </p>
+  </div>
+</section>
+
+<section id="status">
+  <div class="wrap">
+    <h2>Status, honestly</h2>
+    <p class="section-note">
+      Written on 2026-07-21 and used since; packaged for release on 2026-07-27.
+    </p>
+    <dl class="status">
+      <dt>Version</dt>
+      <dd><p>1.0.0 — first public release.</p></dd>
+
+      <dt>Maturity</dt>
+      <dd>
+        <p>Functional and in regular use. Single author.</p>
+        <p>The output quality depends on the model running it and on how much the repository
+           actually reveals. It is a protocol, not a guarantee.</p>
+      </dd>
+
+      <dt>Requires</dt>
+      <dd>
+        <p>Claude Code, Claude Cowork, or claude.ai with Skills enabled.</p>
+        <p>Six Markdown files, no runtime dependencies. The Verify phase does more when the
+           environment has a browser or renderer available.</p>
+      </dd>
+
+      <dt>Checks</dt>
+      <dd>
+        <p><code>scripts/validate_skill.py</code> runs in CI on every push and pull request:
+           frontmatter, reference files cited vs. shipped, installer coverage, internal anchors,
+           and byte hygiene.</p>
+      </dd>
+
+      <dt>This page</dt>
+      <dd>
+        <p>Built with the skill, applied to its own repository. One static HTML file, no build
+           step — which is what Phase 2 selects for a project made of six Markdown files.</p>
+      </dd>
+
+      <dt>License</dt>
+      <dd><p>MIT.</p></dd>
+    </dl>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>MIT © 2026 Scott Converse</span>
+    <nav aria-label="Footer">
+      <a href="https://github.com/scottconverse/landing-page">Repository</a>
+      <a href="https://github.com/scottconverse/landing-page/blob/main/SKILL.md">SKILL.md</a>
+      <a href="https://github.com/scottconverse/landing-page/blob/main/CHANGELOG.md">Changelog</a>
+      <a href="https://code.claude.com/docs/en/skills">About Agent Skills</a>
+    </nav>
+  </div>
+</footer>
+</body>
+</html>
