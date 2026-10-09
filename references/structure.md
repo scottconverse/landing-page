@@ -1,6 +1,6 @@
 # Phase 5 — Page Structure
 
-Choose the structure the actual project needs. Do not use every section below; a strong page
+Choose the structure the actual project needs. Use only the sections the project needs; extra sections dilute the page. A strong page
 usually uses most of them, in an order that carries a narrative.
 
 ## Contents
@@ -23,8 +23,7 @@ a primary CTA, a secondary CTA, one visual proof element, and a few high-value t
 
 Visual proof can be an actual screenshot, an interface rendering built from repository assets,
 an architecture or workflow visualization, a code sample, a terminal, a device frame, the real
-running application, or a product diagram. **Do not use meaningless abstract artwork when real
-product proof is available, and never fabricate a screenshot.**
+running application, or a product diagram.
 
 ### Proof strip
 A compact band of facts: self-hosted, open source, local-first, supported protocols, deployment
@@ -40,8 +39,7 @@ Group features into meaningful product themes — Operate, Automate, Integrate, 
 Deploy, Recover, Create, Publish, Manage, or names from the project's own vocabulary. Use as many
 themes as the product needs.
 
-Do not make every capability its own card. Do not ship generic cards labeled only *Fast*,
-*Secure*, *Flexible*, or *Modern* — use concrete capability titles.
+Group capabilities and name them by outcome; generic one-word cards say nothing.
 
 ### Product screenshots
 Real ones, showing meaningful states: dashboard, primary workflow, configuration, scheduling,
@@ -109,7 +107,7 @@ links, and maintainership or copyright where it exists. **Never invent a social 
 
 ## 2. Design rhythm
 
-Do not repeat one layout pattern section after section. The tell of a generated page:
+Vary layout between sections within one design system, since uniform sections read as generated. The tell of a generated page:
 
 > hero → three cards → three cards → three cards → CTA
 

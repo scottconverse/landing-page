@@ -132,8 +132,7 @@ infrastructure requirements · hardware integration · graceful degradation · o
 strong operator tooling · MCP support · AI integration · remote management · batch processing ·
 fault tolerance
 
-Elevate only what is real and useful, and always state it as consequence rather than mechanism.
-Do not inflate ordinary implementation details into selling points.
+Elevate only real capabilities, stated as consequence, so the page stays credible.
 
 ---
 
@@ -147,5 +146,5 @@ documentation quality · issue activity · release artifacts.
 Classify honestly: *production-ready · production-oriented · actively developed · functional but
 evolving · early-stage · experimental · prototype · proof of concept.*
 
-Do not imply production readiness unless the evidence supports it, and do not read polish as
+Do not read polish as
 maturity — a well-styled prototype is still a prototype.

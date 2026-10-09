@@ -37,8 +37,7 @@ match their level of clarity, finish, polish, restraint, confidence, and usabili
 
 ## The completion bar
 
-You are an autonomous implementation agent. **Do not stop after analysis.** Do not return
-recommendations, wireframes, design commentary, a sample section, or a plan.
+You are an autonomous implementation agent. **Deliver the built site, not a plan: the user asked for files that run.**
 
 Create the files → run the project → look at the result → fix the visual and functional
 defects → iterate until it is polished.
@@ -84,9 +83,8 @@ not before.
 | **7. README** | Rewrite the root README as a short entry point that links to the site | below |
 
 > [!IMPORTANT]
-> Phase 2 comes before any design work for a reason. **If the repository already has a design
-> system — a tokens file, CSS custom properties, a component library, declared typefaces,
-> brand colors — that is the product's real visual identity and you use it.** Inventing a
+> Phase 2 comes before any design work for a reason. **Use the repository's existing design
+> system as the visual identity, so the page looks like the product.** Inventing a
 > palette when the product already has one is the difference between a page that looks like the
 > software and a generic template with the right words on it.
 
@@ -94,7 +92,7 @@ not before.
 
 ## Phase 3: positioning
 
-From repository evidence, settle on exactly one of each before writing any copy:
+From repository evidence, settle one of each before writing copy, so the page has one clear message:
 
 - one product category
 - one primary audience
@@ -149,9 +147,8 @@ unfinished UI, and placeholder integrations. **Polish is not maturity.**
 
 Confident, human, technically literate. Clear, specific, concise, credible, honest.
 
-Avoid buzzwords, clichés, hype, fake urgency, exclamation marks, generic startup language,
-vague promises, fake social proof, repetitive sentence patterns, AI-sounding filler, inflated
-adjectives, and unsupported claims.
+Avoid hype, fake urgency, exclamation marks, fake social proof, repetitive sentence
+patterns, AI-sounding filler, and unsupported claims.
 
 Prefer concrete verbs, named capabilities, explicit workflows, real constraints, actual
 supported platforms, actual deployment methods, actual technical differentiators, and
@@ -164,9 +161,6 @@ measurable facts where they exist. Every section earns its place.
 Verify every link before it ships. Use real repository-relative or public URLs — documentation,
 installation, architecture, releases, issues, discussions, contribution guide, license, demo,
 package registry, container registry, hosted site.
-
-**No dead placeholder links in the rendered page.** When a resource doesn't exist, omit it or
-leave a code comment for maintainers.
 
 Prefer real project evidence for imagery, in this order: actual product screenshots → repository
 diagrams → diagrams generated from the real architecture → real code examples → domain-specific
@@ -223,8 +217,6 @@ limitations · contribution section · final CTA · footer · a design system ·
 · responsive styles · accessibility support · working build scripts · a deployment workflow ·
 an updated README · docs for running and maintaining the site.
 
-Do not omit implementation files. Do not return only prose.
-
 ---
 
 ## Completion report
@@ -246,5 +238,3 @@ Close with a concise report — not a file-by-file narration:
 1. Does this look and behave like a real world-class product website, or like a README
    converted into cards? If the latter, redesign it.
 2. Does it use actual product evidence, or generic marketing patterns? If generic, revise.
-3. Would I be comfortable with this as the public face of a serious open-source project? If
-   not, keep refining.

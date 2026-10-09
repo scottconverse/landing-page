@@ -82,8 +82,7 @@ preference:
 4. **Next.js** — only when the repository already justifies it
 5. **Static HTML, CSS, and JS** — right for simple projects, and never a lesser choice
 
-Do not introduce a heavy framework for visual effect. Do not create a backend for a static page.
-Do not add unnecessary dependencies. Do not switch the repository's package manager.
+Use the lightest stack that fits and the repo's existing package manager, because extra dependencies and backends add maintenance and can break the repo.
 
 The site should be easy for a maintainer to understand and update six months from now.
 
@@ -102,7 +101,6 @@ apps/website/
 ```
 
 - Do not overwrite product code.
-- Do not put the landing page inside `README.md`.
 - If the repository already serves GitHub Pages from `/docs`, preserve that convention unless
   there is a strong technical reason not to.
 - Document the final location clearly.

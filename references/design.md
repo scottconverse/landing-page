@@ -1,9 +1,8 @@
 # Phase 4 — Design System
 
-Define the system before implementing the page. Deciding colors and type inside the markup is
-how a page ends up inconsistent.
+Define colors and type before building, because choices made inside markup drift.
 
-**First, re-check Phase 2.** If the repository already has tokens, brand colors, or declared
+If the repository already has tokens, brand colors, or declared
 typefaces, this phase is *extending that system*, not authoring a new one.
 
 ## Contents
@@ -43,12 +42,7 @@ The useful question: **what does this software look like to the people who alrea
 domain?** A broadcast tool can borrow the control room. A CAD tool can borrow the drawing. A
 security tool can borrow the audit log. That is where distinctive, non-generic choices come from.
 
-**Do not default to** purple gradients · dark SaaS backgrounds · glassmorphism · neon glows ·
-generic blue cards · abstract blobs · excessive gradient text · generic startup aesthetics.
-
-**Do not copy the reference site you were shown.** If someone points at another project's page
-as the bar, match its level of craft and reject its palette, type, and structural devices. Two
-projects that look like siblings both look generic.
+Avoid generic defaults (purple gradients, glassmorphism, neon, blobs) because they signal a template, not this product.
 
 **Commit to one visual world.** A branded product page may fix its own palette rather than
 following the viewer's light/dark preference — a legitimate choice when it is deliberate and
@@ -69,10 +63,7 @@ transitions · polished component spacing · consistent alignment · meaningful 
 restrained color · professional responsive behavior · thoughtful screenshots and diagrams ·
 clear primary and secondary actions · a deliberate scroll narrative.
 
-Do not confuse beauty with decoration. Avoid excessive animation · too many badges · too many
-icons · walls of text · arbitrary gradients · repeated card grids · repetitive section patterns
-· inconsistent radius or shadow · fake testimonials · fake metrics · fake customer logos ·
-unsupported claims · empty decorative sections.
+Cut decoration that carries no information; every element should help the reader decide.
 
 Every visual element either explains the product or guides the user. If it does neither, cut it.
 
@@ -137,7 +128,6 @@ the primary workflow, configuration, monitoring, results, an admin view, a mobil
 every capture for secrets, tokens, and personal data before it ships. Caption them with the value
 they demonstrate, not the name of the screen.
 
-Never stock photography. Never imagery unrelated to the software. Never a fabricated screenshot,
-customer logo, award, or press mention. When no assets exist, build tasteful CSS or SVG
+When no assets exist, build tasteful CSS or SVG
 compositions grounded in the product — and if you render a UI illustration rather than capturing
 the real thing, say so honestly in a caption.
