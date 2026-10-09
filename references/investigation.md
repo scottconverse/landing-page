@@ -147,5 +147,5 @@ documentation quality · issue activity · release artifacts.
 Classify honestly: *production-ready · production-oriented · actively developed · functional but
 evolving · early-stage · experimental · prototype · proof of concept.*
 
-Do not imply production readiness unless the evidence supports it, and do not read polish as
+Do not read polish as
 maturity — a well-styled prototype is still a prototype.

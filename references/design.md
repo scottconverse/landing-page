@@ -1,9 +1,8 @@
 # Phase 4 — Design System
 
-Define the system before implementing the page. Deciding colors and type inside the markup is
-how a page ends up inconsistent.
+Define colors and type before building, because choices made inside markup drift.
 
-**First, re-check Phase 2.** If the repository already has tokens, brand colors, or declared
+If the repository already has tokens, brand colors, or declared
 typefaces, this phase is *extending that system*, not authoring a new one.
 
 ## Contents
@@ -137,7 +136,6 @@ the primary workflow, configuration, monitoring, results, an admin view, a mobil
 every capture for secrets, tokens, and personal data before it ships. Caption them with the value
 they demonstrate, not the name of the screen.
 
-Never stock photography. Never imagery unrelated to the software. Never a fabricated screenshot,
-customer logo, award, or press mention. When no assets exist, build tasteful CSS or SVG
+When no assets exist, build tasteful CSS or SVG
 compositions grounded in the product — and if you render a UI illustration rather than capturing
 the real thing, say so honestly in a caption.
