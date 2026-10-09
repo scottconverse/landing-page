@@ -82,7 +82,7 @@ preference:
 4. **Next.js** — only when the repository already justifies it
 5. **Static HTML, CSS, and JS** — right for simple projects, and never a lesser choice
 
-Use the lightest stack that fits and the repo's existing package manager, because extra dependencies and backends add maintenance and can break the repo.
+Use the lightest stack that fits and the repo's existing package manager, because extra dependencies and backends add maintenance and can break the repo. Do not create a backend for a static page. Do not add unnecessary dependencies.
 
 The site should be easy for a maintainer to understand and update six months from now.
 

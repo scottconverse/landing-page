@@ -164,6 +164,8 @@ Verify every link before it ships. Use real repository-relative or public URLs �
 installation, architecture, releases, issues, discussions, contribution guide, license, demo,
 package registry, container registry, hosted site.
 
+**No dead placeholder links in the rendered page.** When a resource doesn't exist, omit it or leave a code comment for maintainers.
+
 Prefer real project evidence for imagery, in this order: actual product screenshots → repository
 diagrams → diagrams generated from the real architecture → real code examples → domain-specific
 illustration → restrained abstract graphics. Never stock photography, never fabricated
