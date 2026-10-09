@@ -23,7 +23,8 @@ a primary CTA, a secondary CTA, one visual proof element, and a few high-value t
 
 Visual proof can be an actual screenshot, an interface rendering built from repository assets,
 an architecture or workflow visualization, a code sample, a terminal, a device frame, the real
-running application, or a product diagram.
+running application, or a product diagram. **Do not use meaningless abstract artwork when real
+product proof is available, and never fabricate a screenshot.**
 
 ### Proof strip
 A compact band of facts: self-hosted, open source, local-first, supported protocols, deployment

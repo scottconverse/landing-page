@@ -132,7 +132,8 @@ infrastructure requirements · hardware integration · graceful degradation · o
 strong operator tooling · MCP support · AI integration · remote management · batch processing ·
 fault tolerance
 
-Elevate only real capabilities, stated as consequence, so the page stays credible.
+Elevate only what is real and useful, and always state it as consequence rather than mechanism.
+Do not inflate ordinary implementation details into selling points.
 
 ---
 

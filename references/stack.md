@@ -101,6 +101,7 @@ apps/website/
 ```
 
 - Do not overwrite product code.
+- Do not put the landing page inside `README.md`.
 - If the repository already serves GitHub Pages from `/docs`, preserve that convention unless
   there is a strong technical reason not to.
 - Document the final location clearly.
